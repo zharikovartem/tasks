@@ -33,7 +33,7 @@ class CreateController {
 
             if ($errors == false) {
                 $newTask = Task::createNewTask($login, $email, $descriptions);
-    
+
                 $toasts = Task::createNewToast('Создана новая задача!');
 
                 header('Location: /');

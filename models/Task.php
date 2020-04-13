@@ -44,7 +44,7 @@ class Task {
             $direction = 'DESC';
         }
         
-        $sql = 'SELECT id, userName, email, discriptions, completed
+        $sql = 'SELECT *
                 FROM tasks 
                 ORDER BY '.$field.' '.$direction.' 
                 LIMIT 3 
@@ -60,6 +60,7 @@ class Task {
                 $TaskList[$i]['email'] = $row['email'];
                 $TaskList[$i]['discriptions'] = $row['discriptions'];
                 $TaskList[$i]['completed'] = $row['completed'];
+                $TaskList[$i]['edited'] = $row['edited'];
                 $i++;
             // }
         }
@@ -76,7 +77,7 @@ class Task {
 
     public static function createNewTask($userName, $email, $discriptions) {
         $db = Db::getConnection();
-        $sql = 'INSERT INTO task (userName, email, discriptions, completed) 
+        $sql = 'INSERT INTO tasks (userName, email, discriptions, completed) 
         VALUES (:userName, :email, :discriptions, 0);';
 
         $result = $db->prepare($sql);
@@ -89,7 +90,7 @@ class Task {
 
     public static function editTask($id, $discriptions) {
         $db = Db::getConnection();
-        $sql = 'UPDATE tasks SET discriptions = :discriptions, completed = 1 WHERE id = :id;';
+        $sql = 'UPDATE tasks SET discriptions = :discriptions, completed = 1, edited = 1 WHERE id = :id;';
 
         $result = $db->prepare($sql);
         $result->bindParam(':discriptions', $discriptions, PDO::PARAM_STR);
@@ -143,5 +144,28 @@ class Task {
 
     public static function createNewToast($value) {
         return $_SESSION['toasts'] = $value;
+    }
+
+    public static function changeStatus($completed, $id) {
+        if ($completed == 'true') {
+            $completed = 1;
+        } else {
+            $completed = 0;
+        }
+        $params = array(
+            'host' => 'mysql.zzz.com.ua',
+            'dbname' => 'zharikov',
+            'user' => 'db1test',
+            'password' => 'Gfhjkm4502'
+        );
+        $dsn2 = "mysql:host={$params['host']};dbname={$params['dbname']}";
+        $db2 = new PDO($dsn2, $params['user'], $params['password']);
+        $sql = 'UPDATE tasks SET completed = :completed WHERE id = :id;';
+
+        $result = $db2->prepare($sql);
+        $result->bindParam(':completed', $completed, PDO::PARAM_STR);
+        $result->bindParam(':id', $id, PDO::PARAM_STR);
+
+        return $result->execute();
     }
 }

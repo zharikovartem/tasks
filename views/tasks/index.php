@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    
 
     <title>Task!</title>
   </head>
@@ -71,11 +73,11 @@
                 <!-- <th scope="row"><?php echo $newsItem['id']?></th> -->
                 <td><?php echo $newsItem['userName']?></td>
                 <td><?php echo $newsItem['email']?></td>
-                <td><?php echo $newsItem['discriptions']?></td>
+                <td><?php echo $newsItem['discriptions']; if ($newsItem['edited'] == 1) {echo '<b>(edited)</b>';}?></td>
                 <?php if ($user['status'] == 'admin'): ?>
                     <td>
                         <div class="custom-control custom-switch">
-                            <input type="checkbox" 
+                            <input type="checkbox" data-id="<?php echo $newsItem['id']?>"
                             <?php if ($newsItem['completed'] == 1){ echo 'checked';} ?>
                              class="custom-control-input" id="customSwitch<?php echo $newsItem['id']?>">
                             <label class="custom-control-label" for="customSwitch<?php echo $newsItem['id']?>"></label>
@@ -97,9 +99,27 @@
     
 
     <!-- Optional JavaScript -->
+    
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+    <script>
+        $(".custom-control-input").click(function(event) {
+            let target = event.target || event.srcElement;
+            let params = {
+                checked: target.checked,
+                data_id: $(this).attr('data-id')
+            }
+            $.post('/views/tasks/ajaxListner.php', params, function(data) {
+
+            });
+        });
+        
+    </script>
+
   </body>
 </html>
